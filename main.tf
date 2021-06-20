@@ -116,10 +116,11 @@ resource "azurerm_app_service" "main" {
   resource_group_name     = local.resource_group_name
   location                = local.location
   app_service_plan_id     = azurerm_app_service_plan.main.id
-  app_settings            = merge(local.default_app_settings, var.app_settings)
   client_affinity_enabled = var.enable_client_affinity
   https_only              = var.enable_https
   client_cert_enabled     = var.enable_client_certificate
+  tags                    = merge({ "ResourceName" = lower(format("app-%s", var.app_service_name)) }, var.tags, )
+  app_settings            = merge(local.default_app_settings, var.app_settings)
 
   dynamic "site_config" {
     for_each = var.site_config
@@ -208,6 +209,18 @@ resource "azurerm_app_service" "main" {
   identity {
     type         = var.identity_ids != {} ? "SystemAssigned, UserAssigned" : "SystemAssigned"
     identity_ids = var.identity_ids
+  }
+
+  dynamic "storage_account" {
+    for_each = var.file_system_storage_account
+    content {
+      name         = lookup(storage_account.value, "name")
+      type         = lookup(storage_account.value, "type", "AzureFiles")
+      account_name = lookup(storage_account.value, "account_name", null)
+      share_name   = lookup(storage_account.value, "share_name", null)
+      access_key   = lookup(storage_account.value, "access_key", null)
+      mount_path   = lookup(storage_account.value, "mount_path", null)
+    }
   }
 
 }

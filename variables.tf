@@ -166,6 +166,12 @@ variable "identity_ids" {
   default     = null
 }
 
+variable "file_system_storage_account" {
+  description = "Storage account mount points for App Service"
+  type        = list(map(string))
+  default     = []
+}
+
 variable "application_insights_id" {
   description = "Resource ID of the existing Application Insights"
   default     = null
