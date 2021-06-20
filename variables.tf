@@ -1,6 +1,6 @@
 variable "create_resource_group" {
   description = "Whether to create resource group and use it for all networking resources"
-  default     = true
+  default     = false
 }
 
 variable "resource_group_name" {
@@ -125,11 +125,6 @@ variable "enable_https" {
   default     = false
 }
 
-variable "application_insights_enabled" {
-  description = "Specify the Application Insights use for this App Service"
-  default     = true
-}
-
 variable "enable_backup" {
   description = "bool to to setup backup for app service "
   default     = false
@@ -170,6 +165,11 @@ variable "file_system_storage_account" {
   description = "Storage account mount points for App Service"
   type        = list(map(string))
   default     = []
+}
+
+variable "application_insights_enabled" {
+  description = "Specify the Application Insights use for this App Service"
+  default     = true
 }
 
 variable "application_insights_id" {

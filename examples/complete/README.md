@@ -1,16 +1,22 @@
+# Azure App Service (Web Apps) Terraform Module
+
+Terraform module to create Azure App Service with optional site_config, backup, connection_string, auth_settings and Storage for mount points.
+
+## Module Usage
+
+```hcl
 module "web-app" {
-  //  source  = "kumarvna/web-app/azurerm"
-  //version = "1.0.0"
-  source = "../../"
+  source  = "kumarvna/web-app/azurerm"
+  version = "1.0.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
-  # proivde a name to use an existing resource group, specify the existing resource group name, 
+  # proivde a name to use an existing resource group, specify the existing resource group name,
   # set the argument to `create_resource_group = true` to create new resrouce group.
   resource_group_name = "rg-shared-westeurope-01"
 
   # App service plan setttings and supported arguments. Default name used by module
-  # To specify custom name use `app_service_plan_name` with a valid name.  
-  # for Service Plans, see https://azure.microsoft.com/en-us/pricing/details/app-service/windows/  
+  # To specify custom name use `app_service_plan_name` with a valid name.
+  # for Service Plans, see https://azure.microsoft.com/en-us/pricing/details/app-service/windows/
   # when using an App Service Plan in the `Free` or `Shared` Tiers `use_32_bit_worker_process` must be set to `true`.
   service_plan = ({
     kind = "Windows"
@@ -24,7 +30,7 @@ module "web-app" {
   app_service_name       = "mypocproject"
   enable_client_affinity = true
 
-  # A `site_config` block to setup the application environment. 
+  # A `site_config` block to setup the application environment.
   # List available built-in stacks (windows_fx_version) which can be used for web apps `az webapp list-runtimes`
   # List runtime stacks for Linux (linux_fx_version) based web apps `az webapp list-runtimes --linux`
   site_config = {
@@ -40,14 +46,14 @@ module "web-app" {
     DiagnosticServices_EXTENSION_VERSION = "~3"
   }
 
-  # By default App Insight resource is created by this module. 
+  # By default App Insight resource is created by this module.
   # Specify valid resource Id to `application_insights_id` to use existing App Insight
   # Specifies the type of Application by setting up `application_insights_type` with valid string
   # Specifies the retention period in days using `retention_in_days`. Default 90.
-  # By default the real client ip is masked in the logs, to enable set `disable_ip_masking` to `true` 
+  # By default the real client ip is masked in the logs, to enable set `disable_ip_masking` to `true`
   app_insights_name = "otkpocshared"
 
-  # Adding TAG's to your Azure resources 
+  # Adding TAG's to your Azure resources
   tags = {
     ProjectName  = "demo-internal"
     Env          = "dev"
@@ -56,3 +62,18 @@ module "web-app" {
     ServiceClass = "Gold"
   }
 }
+```
+
+## Terraform Usage
+
+To run this example you need to execute following Terraform commands
+
+```hcl
+terraform init
+
+terraform plan
+
+terraform apply
+```
+
+Run `terraform destroy` when you don't need these resources.

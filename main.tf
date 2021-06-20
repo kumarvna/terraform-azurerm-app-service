@@ -1,85 +1,3 @@
-#---------------------------------
-# Local declarations
-#---------------------------------
-locals {
-  resource_group_name = element(coalescelist(data.azurerm_resource_group.rgrp.*.name, azurerm_resource_group.rg.*.name, [""]), 0)
-  location            = element(coalescelist(data.azurerm_resource_group.rgrp.*.location, azurerm_resource_group.rg.*.location, [""]), 0)
-
-  app_insights = try(data.azurerm_application_insights.main.0, try(azurerm_application_insights.main.0, {}))
-
-  default_site_config = {
-    always_on = "true"
-  }
-
-  default_app_settings = var.application_insights_enabled ? {
-    APPLICATION_INSIGHTS_IKEY             = try(local.app_insights.instrumentation_key, "")
-    APPINSIGHTS_INSTRUMENTATIONKEY        = try(local.app_insights.instrumentation_key, "")
-    APPLICATIONINSIGHTS_CONNECTION_STRING = try(local.app_insights.connection_string, "")
-  } : {}
-
-  ip_address = [for ip_address in var.ips_allowed : {
-    name                      = "ip_restriction_cidr_${join("", [1, index(var.ips_allowed, ip_address)])}"
-    ip_address                = ip_address
-    virtual_network_subnet_id = null
-    service_tag               = null
-    subnet_id                 = null
-    priority                  = join("", [1, index(var.ips_allowed, ip_address)])
-    action                    = "Allow"
-  }]
-
-  subnets = [for subnet in var.subnet_ids_allowed : {
-    name                      = "ip_restriction_subnet_${join("", [1, index(var.subnet_ids_allowed, subnet)])}"
-    ip_address                = null
-    virtual_network_subnet_id = subnet
-    service_tag               = null
-    subnet_id                 = subnet
-    priority                  = join("", [1, index(var.subnet_ids_allowed, subnet)])
-    action                    = "Allow"
-  }]
-
-  service_tags = [for service_tag in var.service_tags_allowed : {
-    name                      = "service_tag_restriction_${join("", [1, index(var.service_tags_allowed, service_tag)])}"
-    ip_address                = null
-    virtual_network_subnet_id = null
-    service_tag               = service_tag
-    subnet_id                 = null
-    priority                  = join("", [1, index(var.service_tags_allowed, service_tag)])
-    action                    = "Allow"
-  }]
-
-
-  scm_ip_address = [for ip_address in var.scm_ips_allowed : {
-    name                      = "scm_ip_restriction_cidr_${join("", [1, index(var.scm_ips_allowed, ip_address)])}"
-    ip_address                = ip_address
-    virtual_network_subnet_id = null
-    service_tag               = null
-    subnet_id                 = null
-    priority                  = join("", [1, index(var.scm_ips_allowed, ip_address)])
-    action                    = "Allow"
-  }]
-
-  scm_subnets = [for subnet in var.scm_subnet_ids_allowed : {
-    name                      = "scm_ip_restriction_subnet_${join("", [1, index(var.scm_subnet_ids_allowed, subnet)])}"
-    ip_address                = null
-    virtual_network_subnet_id = subnet
-    service_tag               = null
-    subnet_id                 = subnet
-    priority                  = join("", [1, index(var.scm_subnet_ids_allowed, subnet)])
-    action                    = "Allow"
-  }]
-
-  scm_service_tags = [for service_tag in var.scm_service_tags_allowed : {
-    name                      = "scm_service_tag_restriction_${join("", [1, index(var.scm_service_tags_allowed, service_tag)])}"
-    ip_address                = null
-    virtual_network_subnet_id = null
-    service_tag               = service_tag
-    subnet_id                 = null
-    priority                  = join("", [1, index(var.scm_service_tags_allowed, service_tag)])
-    action                    = "Allow"
-  }]
-
-}
-
 #---------------------------------------------------------
 # Resource Group Creation or selection - Default is "true"
 #----------------------------------------------------------
@@ -106,7 +24,6 @@ resource "azurerm_app_service_plan" "main" {
   is_xenon            = var.service_plan.kind == "xenon" ? true : false
   per_site_scaling    = var.service_plan.per_site_scaling
   tags                = merge({ "ResourceName" = format("%s", var.app_service_plan_name) }, var.tags, )
-  #  app_service_environment_id = add the feature later
 
   sku {
     tier     = var.service_plan.tier
@@ -128,7 +45,7 @@ resource "azurerm_app_service" "main" {
 
   dynamic "site_config" {
     for_each = [merge(local.default_site_config, var.site_config)]
-    
+
     content {
       always_on                   = lookup(site_config.value, "always_on", false)
       app_command_line            = lookup(site_config.value, "app_command_line", null)
@@ -147,8 +64,8 @@ resource "azurerm_app_service" "main" {
       local_mysql_enabled         = lookup(site_config.value, "local_mysql_enabled", null)
       linux_fx_version            = lookup(site_config.value, "linux_fx_version", null)
       windows_fx_version          = lookup(site_config.value, "windows_fx_version", null)
-      managed_pipeline_mode       = lookup(site_config.value, "managed_pipeline_mode", null)
-      min_tls_version             = lookup(site_config.value, "min_tls_version", null)
+      managed_pipeline_mode       = lookup(site_config.value, "managed_pipeline_mode", "Integrated")
+      min_tls_version             = lookup(site_config.value, "min_tls_version", "1.2")
       php_version                 = lookup(site_config.value, "php_version", null)
       python_version              = lookup(site_config.value, "python_version", null)
       remote_debugging_enabled    = lookup(site_config.value, "remote_debugging_enabled", null)
