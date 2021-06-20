@@ -44,7 +44,7 @@ variable "app_settings" {
 
 variable "site_config" {
   description = "Site configuration for Application Service"
-  type        = any
+  type        = map(string)
   default     = {}
 }
 
