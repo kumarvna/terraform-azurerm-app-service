@@ -11,7 +11,8 @@ module "web-app" {
     tier = "Standard"
   })
 
-  app_service_name = "mypocproject"
+  app_service_name  = "mypocproject"
+  app_insights_name = "otkpocshared"
 
   # Adding TAG's to your Azure resources (Required)
   tags = {
