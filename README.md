@@ -110,6 +110,7 @@ module "web-app" {
     ServiceClass = "Gold"
   }
 }
+```
 
 ## Requirements
 
@@ -126,43 +127,43 @@ module "web-app" {
 
 ## Inputs
 
-| Name                 | Description           | Type   | Default
-| -------------------- | --------------------- | ------ | -------
-`create_resource_group` | Whether to create resource group and use it for all networking resources | string | `true`
-`resource_group_name` | The name of the resource group in which resources are created | string | `""`
-`location`|The location of the resource group in which resources are created| string | `""`
-`app_service_plan_name`|Specifies the name of the App Service Plan component|string| `""`
-`service_plan`|Definition of the dedicated plan to use|object({})|`{}`
-`app_service_name`|Specifies the name of the App Service|string|`""`
-`app_settings`|A key-value pair of App Settings|map(string)|`{}`
-`site_config`|Site configuration for Application Service|any|`{}`
-`ips_allowed`|IPs restriction for App Service to allow specific IP addresses or ranges|list(string)|`[]`
-`subnet_ids_allowed`|Allow Specific Subnets for App Service|list(string)|`[]`
-`service_tags_allowed`|Restrict Service Tags for App Service|list(string)|`[]`
-`scm_ips_allowed`|SCM IP restrictions for App service|list(string)|`[]`
-`scm_subnet_ids_allowed`|Restrict SCM Subnets for App Service|list(string)|`[]`
-`scm_service_tags_allowed`|Restrict SCM Service Tags for App Service|list(string)|`[]`
-`enable_auth_settings`|Specifies the Authenication enabled or not|string|`false`
-`default_auth_provider`|The default provider to use when multiple providers have been set up. Possible values are `AzureActiveDirectory`, `Facebook`, `Google`, `MicrosoftAccount` and `Twitter`"|string|`"AzureActiveDirectory"`
-`unauthenticated_client_action`|The action to take when an unauthenticated client attempts to access the app. Possible values are `AllowAnonymous` and `RedirectToLoginPage`|string|`"RedirectToLoginPage"`
-`token_store_enabled`|If enabled the module will durably store platform-specific security tokens that are obtained during login flows|string|`false`
-`active_directory_auth_setttings`|Acitve directory authentication provider settings for app service|any|`{}`
-`enable_client_affinity`|Should the App Service send session affinity cookies, which route client requests in the same session to the same instance?|string|`false`
-`enable_client_certificate`|Does the App Service require client certificates for incoming requests|string|`false`
-`enable_https`|Can the App Service only be accessed via HTTPS?|string|`false`
-`enable_backup`|bool to to setup backup for app service|string|`false`
-`backup_settings`|Backup settings for App service|object({})|`{}`
-`connection_strings`|Connection strings for App Service|list(map(string))|`[]`
-`identity_ids`|Specifies a list of user managed identity ids to be assigned|string|`null`
-`file_system_storage_account`|Storage account mount points for App Service|list(map(string))|`[]`
-`custom_domains`|Custom domains with SSL binding and SSL certificates for the App Service. Getting the SSL certificate from an Azure Keyvault Certificate Secret or a file is possible|map(map(string))|`null`
-`application_insights_enabled`|Specify the Application Insights use for this App Service|string|`true`
-`application_insights_id`|Resource ID of the existing Application Insights|string|`null`
-`app_insights_name`|The Name of the application insights|string|`""`
-`application_insights_type`|Specifies the type of Application Insights to create. Valid values are `ios` for iOS, `java` for Java web, `MobileCenter` for App Center, `Node.JS` for Node.js, `other` for General, `phone` for Windows Phone, `store` for Windows Store and `web` for ASP.NET|string| `"web"`
-`retention_in_days`|Specifies the retention period in days. Possible values are `30`, `60`, `90`, `120`, `180`, `270`, `365`, `550` or `730`|number|`90`
-`disable_ip_masking`|By default the real client ip is masked as `0.0.0.0` in the logs. Use this argument to disable masking and log the real client ip|string|`false`
-`Tags`|A map of tags to add to all resources|map|`{}`
+| Name                              | Description                                                                                                                                                                                                                                                      | Type              | Default                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------ |
+| `create_resource_group`           | Whether to create resource group and use it for all networking resources                                                                                                                                                                                         | string            | `"false"`                |
+| `resource_group_name`             | The name of the resource group in which resources are created                                                                                                                                                                                                    | string            | `""`                     |
+| `location`                        | The location of the resource group in which resources are created                                                                                                                                                                                                | string            | `""`                     |
+| `app_service_plan_name`           | Specifies the name of the App Service Plan component                                                                                                                                                                                                             | string            | `""`                     |
+| `service_plan`                    | Definition of the dedicated plan to use                                                                                                                                                                                                                          | object({})        | `{}`                     |
+| `app_service_name`                | Specifies the name of the App Service                                                                                                                                                                                                                            | string            | `""`                     |
+| `app_settings`                    | A key-value pair of App Settings                                                                                                                                                                                                                                 | map(string)       | `{}`                     |
+| `site_config`                     | Site configuration for Application Service                                                                                                                                                                                                                       | any               | `{}`                     |
+| `ips_allowed`                     | IPs restriction for App Service to allow specific IP addresses or ranges                                                                                                                                                                                         | list(string)      | `[]`                     |
+| `subnet_ids_allowed`              | Allow Specific Subnets for App Service                                                                                                                                                                                                                           | list(string)      | `[]`                     |
+| `service_tags_allowed`            | Restrict Service Tags for App Service                                                                                                                                                                                                                            | list(string)      | `[]`                     |
+| `scm_ips_allowed`                 | SCM IP restrictions for App service                                                                                                                                                                                                                              | list(string)      | `[]`                     |
+| `scm_subnet_ids_allowed`          | Restrict SCM Subnets for App Service                                                                                                                                                                                                                             | list(string)      | `[]`                     |
+| `scm_service_tags_allowed`        | Restrict SCM Service Tags for App Service                                                                                                                                                                                                                        | list(string)      | `[]`                     |
+| `enable_auth_settings`            | Specifies the Authenication enabled or not                                                                                                                                                                                                                       | string            | `false`                  |
+| `default_auth_provider`           | The default provider to use when multiple providers have been set up. Possible values are `AzureActiveDirectory`, `Facebook`, `Google`, `MicrosoftAccount` and `Twitter`"                                                                                        | string            | `"AzureActiveDirectory"` |
+| `unauthenticated_client_action`   | The action to take when an unauthenticated client attempts to access the app. Possible values are `AllowAnonymous` and `RedirectToLoginPage`                                                                                                                     | string            | `"RedirectToLoginPage"`  |
+| `token_store_enabled`             | If enabled the module will durably store platform-specific security tokens that are obtained during login flows                                                                                                                                                  | string            | `false`                  |
+| `active_directory_auth_setttings` | Acitve directory authentication provider settings for app service                                                                                                                                                                                                | any               | `{}`                     |
+| `enable_client_affinity`          | Should the App Service send session affinity cookies, which route client requests in the same session to the same instance?                                                                                                                                      | string            | `false`                  |
+| `enable_client_certificate`       | Does the App Service require client certificates for incoming requests                                                                                                                                                                                           | string            | `false`                  |
+| `enable_https`                    | Can the App Service only be accessed via HTTPS?                                                                                                                                                                                                                  | string            | `false`                  |
+| `enable_backup`                   | bool to to setup backup for app service                                                                                                                                                                                                                          | string            | `false`                  |
+| `backup_settings`                 | Backup settings for App service                                                                                                                                                                                                                                  | object({})        | `{}`                     |
+| `connection_strings`              | Connection strings for App Service                                                                                                                                                                                                                               | list(map(string)) | `[]`                     |
+| `identity_ids`                    | Specifies a list of user managed identity ids to be assigned                                                                                                                                                                                                     | string            | `null`                   |
+| `file_system_storage_account`     | Storage account mount points for App Service                                                                                                                                                                                                                     | list(map(string)) | `[]`                     |
+| `custom_domains`                  | Custom domains with SSL binding and SSL certificates for the App Service. Getting the SSL certificate from an Azure Keyvault Certificate Secret or a file is possible                                                                                            | map(map(string))  | `null`                   |
+| `application_insights_enabled`    | Specify the Application Insights use for this App Service                                                                                                                                                                                                        | string            | `true`                   |
+| `application_insights_id`         | Resource ID of the existing Application Insights                                                                                                                                                                                                                 | string            | `null`                   |
+| `app_insights_name`               | The Name of the application insights                                                                                                                                                                                                                             | string            | `""`                     |
+| `application_insights_type`       | Specifies the type of Application Insights to create. Valid values are `ios` for iOS, `java` for Java web, `MobileCenter` for App Center, `Node.JS` for Node.js, `other` for General, `phone` for Windows Phone, `store` for Windows Store and `web` for ASP.NET | string            | `"web"`                  |
+| `retention_in_days`               | Specifies the retention period in days. Possible values are `30`, `60`, `90`, `120`, `180`, `270`, `365`, `550` or `730`                                                                                                                                         | number            | `90`                     |
+| `disable_ip_masking`              | By default the real client ip is masked as `0.0.0.0` in the logs. Use this argument to disable masking and log the real client ip                                                                                                                                | string            | `false`                  |
+| `Tags`                            | A map of tags to add to all resources                                                                                                                                                                                                                            | map               | `{}`                     |
 
 ## Outputs
 
@@ -182,4 +183,7 @@ Originally created by [Kumaraswamy Vithanala](mailto:kumarvna@gmail.com)
 
 - [App Service(Web Apps)](https://docs.microsoft.com/en-us/azure/app-service/)
 - [Terraform AzureRM Provider Documentation](https://www.terraform.io/docs/providers/azurerm/index.html)
+
+```
+
 ```
