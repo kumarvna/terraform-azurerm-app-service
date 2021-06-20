@@ -11,8 +11,17 @@ module "web-app" {
     tier = "Standard"
   })
 
-  app_service_name  = "mypocproject"
-  app_insights_name = "otkpocshared"
+  app_service_name       = "mypocproject"
+  app_insights_name      = "otkpocshared"
+  enable_client_affinity = true
+
+  site_config = {
+    always_on                 = true
+    dotnet_framework_version  = "v2.0"
+    ftps_state                = "FtpsOnly"
+    managed_pipeline_mode     = "Integrated"
+    use_32_bit_worker_process = true
+  }
 
   # Adding TAG's to your Azure resources (Required)
   tags = {
