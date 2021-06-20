@@ -21,7 +21,7 @@ module "web-app" {
     ftps_state                = "FtpsOnly"
     managed_pipeline_mode     = "Integrated"
     use_32_bit_worker_process = true
-    linux_fx_version          = "DOTNETCORE|3.1"
+    linux_fx_version          = "DOTNET|5.0"
   }
 
   # Adding TAG's to your Azure resources (Required)
