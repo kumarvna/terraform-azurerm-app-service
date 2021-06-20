@@ -124,6 +124,7 @@ resource "azurerm_app_service" "main" {
 
   dynamic "site_config" {
     for_each = var.site_config
+    iterator = site_config
 
     content {
       always_on                   = lookup(site_config.value, "always_on", false)

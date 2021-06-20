@@ -44,8 +44,8 @@ variable "app_settings" {
 
 variable "site_config" {
   description = "Site configuration for Application Service"
-  type        = map(string)
-  default     = {}
+  #  type        = map(string)
+  default = {}
 }
 
 variable "ips_allowed" {
