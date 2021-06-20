@@ -167,6 +167,12 @@ variable "file_system_storage_account" {
   default     = []
 }
 
+variable "custom_domains" {
+  description = "Custom domains with SSL binding and SSL certificates for the App Service. Getting the SSL certificate from an Azure Keyvault Certificate Secret or a file is possible."
+  type        = map(map(string))
+  default     = null
+}
+
 variable "application_insights_enabled" {
   description = "Specify the Application Insights use for this App Service"
   default     = true

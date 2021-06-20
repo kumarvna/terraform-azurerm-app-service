@@ -145,3 +145,24 @@ resource "azurerm_app_service" "main" {
   }
 
 }
+
+
+resource "azurerm_app_service_certificate" "main" {
+  for_each            = var.custom_domains != null ? { for k, v in var.custom_domains : k => v if v != null } : {}
+  name                = each.key
+  resource_group_name = local.resource_group_name
+  location            = local.location
+  pfx_blob            = contains(keys(each.value), "certificate_file") ? filebase64(each.value.certificate_file) : null
+  password            = contains(keys(each.value), "certificate_file") ? each.value.certificate_password : null
+  key_vault_secret_id = contains(keys(each.value), "certificate_keyvault_certificate_id") ? each.value.certificate_keyvault_certificate_id : null
+}
+
+resource "azurerm_app_service_custom_hostname_binding" "cust-host-bind" {
+  for_each            = var.custom_domains != null ? var.custom_domains : {}
+  hostname            = each.key
+  app_service_name    = azurerm_app_service.main.name
+  resource_group_name = local.resource_group_name
+  ssl_state           = lookup(azurerm_app_service_certificate.main, each.key, false) != false ? "SniEnabled" : null
+  thumbprint          = lookup(azurerm_app_service_certificate.main, each.key, false) != false ? azurerm_app_service_certificate.main[each.key].thumbprint : null
+}
+
