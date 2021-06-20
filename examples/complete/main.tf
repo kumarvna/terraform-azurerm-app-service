@@ -1,5 +1,6 @@
 module "web-app" {
-  source = "github.com/kumarvna/terraform-azurerm-web-app?ref=develop"
+  //  source = "github.com/kumarvna/terraform-azurerm-web-app?ref=develop"
+  source = "../../"
 
   # app_service_plan_name = "mydemoapp"
   create_resource_group = false

@@ -7,6 +7,10 @@ locals {
 
   app_insights = try(data.azurerm_application_insights.main.0, try(azurerm_application_insights.main.0, {}))
 
+  default_site_config = {
+    always_on = "true"
+  }
+
   default_app_settings = var.application_insights_enabled ? {
     APPLICATION_INSIGHTS_IKEY             = try(local.app_insights.instrumentation_key, "")
     APPINSIGHTS_INSTRUMENTATIONKEY        = try(local.app_insights.instrumentation_key, "")
@@ -123,14 +127,13 @@ resource "azurerm_app_service" "main" {
   app_settings            = merge(local.default_app_settings, var.app_settings)
 
   dynamic "site_config" {
-    for_each = var.site_config
-    iterator = site_config
-
+    for_each = [merge(local.default_site_config, var.site_config)]
+    
     content {
       always_on                   = lookup(site_config.value, "always_on", false)
       app_command_line            = lookup(site_config.value, "app_command_line", null)
       default_documents           = lookup(site_config.value, "default_documents", null)
-      dotnet_framework_version    = lookup(site_config.value, "dotnet_framework_version", null)
+      dotnet_framework_version    = lookup(site_config.value, "dotnet_framework_version", "v2.0")
       ftps_state                  = lookup(site_config.value, "ftps_state", "FtpsOnly")
       health_check_path           = lookup(site_config.value, "health_check_path", null)
       number_of_workers           = var.service_plan.per_site_scaling == true ? lookup(site_config.value, "number_of_workers") : null
@@ -151,7 +154,7 @@ resource "azurerm_app_service" "main" {
       remote_debugging_enabled    = lookup(site_config.value, "remote_debugging_enabled", null)
       remote_debugging_version    = lookup(site_config.value, "remote_debugging_version", null)
       scm_type                    = lookup(site_config.value, "scm_type", null)
-      use_32_bit_worker_process   = lookup(site_config.value, "use_32_bit_worker_process", null)
+      use_32_bit_worker_process   = lookup(site_config.value, "use_32_bit_worker_process", true)
       websockets_enabled          = lookup(site_config.value, "websockets_enabled", null)
 
 
