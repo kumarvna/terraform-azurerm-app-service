@@ -207,7 +207,7 @@ resource "azurerm_app_service" "main" {
   }
 
   identity {
-    type         = var.identity_ids != {} ? "SystemAssigned, UserAssigned" : "SystemAssigned"
+    type         = var.identity_ids != null ? "SystemAssigned, UserAssigned" : "SystemAssigned"
     identity_ids = var.identity_ids
   }
 
