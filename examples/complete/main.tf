@@ -1,15 +1,14 @@
 module "web-app" {
-  //  source = "github.com/kumarvna/terraform-azurerm-web-app?ref=develop"
-  source = "../../"
+  source = "github.com/kumarvna/terraform-azurerm-web-app?ref=develop"
+  //source = "../../"
 
   # app_service_plan_name = "mydemoapp"
   create_resource_group = false
   resource_group_name   = "rg-shared-westeurope-01"
   service_plan = ({
     kind = "Linux"
-    size = "S1"
-    #capacity = 1
-    tier = "Standard"
+    size = "P1V2"
+    tier = "Premium V2"
   })
 
   app_service_name       = "mypocproject"
