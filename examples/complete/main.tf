@@ -6,8 +6,8 @@ module "web-app" {
   create_resource_group = false
   resource_group_name   = "rg-shared-westeurope-01"
   service_plan = ({
-    kind = "Linux"
-    size = "P1V2"
+    kind = "Windows"
+    size = "P1v2"
     tier = "PremiumV2"
   })
 
@@ -21,7 +21,7 @@ module "web-app" {
     ftps_state                = "FtpsOnly"
     managed_pipeline_mode     = "Integrated"
     use_32_bit_worker_process = true
-    linux_fx_version          = "DOTNET|5.0"
+    linux_fx_version          = "aspnet|V3.5"
   }
 
   # Adding TAG's to your Azure resources (Required)
