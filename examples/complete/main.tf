@@ -8,7 +8,7 @@ module "web-app" {
   service_plan = ({
     kind = "Linux"
     size = "P1V2"
-    tier = "Premium V2"
+    tier = "PremiumV2"
   })
 
   app_service_name       = "mypocproject"
@@ -17,10 +17,11 @@ module "web-app" {
 
   site_config = {
     always_on                 = true
-    dotnet_framework_version  = "v2.0"
+    dotnet_framework_version  = "v4.0"
     ftps_state                = "FtpsOnly"
     managed_pipeline_mode     = "Integrated"
     use_32_bit_worker_process = true
+    linux_fx_version          = "DOTNET|3.1"
   }
 
   # Adding TAG's to your Azure resources (Required)
