@@ -112,7 +112,7 @@ per_site_scaling| Can Apps assigned to this App Service Plan be scaled independe
 
 In App Service, app settings are variables passed as environment variables to the application code. For Linux apps and custom containers, App Service passes app settings to the container using the --env flag to set the environment variable in the container.
 
-`app_settings` object key/value pair example:
+`app_settings` object key-value pair examples:
 
 | Name | Description
 |--|--
@@ -166,6 +166,27 @@ Since App Service CORS lets you specify one set of accepted origins for all API 
 |--|--
 allowed_origins|A list of origins which should be able to make cross-origin calls. `*` can be used to allow all calls.
 support_credentials|Are credentials supported?
+
+### **`ip_restriction`** and **`scm_ip_restriction`** - App Service access restrictions
+
+By setting up access restrictions, you can define a priority-ordered allow/deny list that controls network access to your app. The list can include IP addresses or Azure Virtual Network subnets. When there are one or more entries, an implicit deny all exists at the end of the list.
+
+The access restriction capability is implemented in the App Service front-end roles, which are upstream of the worker hosts where your code runs. Therefore, access restrictions are effectively network access-control lists (ACLs).
+
+The ability to restrict access to your web app from an Azure virtual network is enabled by service endpoints. With service endpoints, you can restrict access to a multi-tenant service from selected subnets. It doesn't work to restrict traffic to apps that are hosted in an App Service Environment. If you're in an App Service Environment, you can control access to your app by applying IP address rules.
+
+A `ip_restriction` or `scm_ip_restriction` block supports the following and managed by `ips_allowed`, `subnet_ids_allowed`, `service_tags_allowed`, `scm_ips_allowed`, `scm_subnet_ids_allowed`, `scm_service_tags_allowed` variables. You can specify any of these variable with valid list of strings to manage the requird access.
+
+> If enabled, one of either ip_address, service_tag or virtual_network_subnet_id must be specified.
+
+| Name | Description
+|--|--
+ip_address|The IP Address used for this IP Restriction in `CIDR` notation.
+service_tag|The `Service Tag` used for this IP Restriction.
+virtual_network_subnet_id|The `Virtual Network Subnet ID` used for this IP Restriction.
+name|The name for this IP Restriction.
+priority|The priority for this IP Restriction. Restrictions are enforced in priority order. By default, priority is set to `65000` if not specified.
+action|Does this restriction `Allow` or `Deny` access for this IP range. Defaults to `Allow`.
 
 ## **`auth_settings`** - Authentication and authorization in Azure App Service
 

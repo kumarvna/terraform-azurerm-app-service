@@ -15,6 +15,9 @@ resource "azurerm_resource_group" "rg" {
   tags     = merge({ "ResourceName" = format("%s", var.resource_group_name) }, var.tags, )
 }
 
+#---------------------------------------------------------
+# App Service Plan definition - Default is "true"
+#----------------------------------------------------------
 resource "azurerm_app_service_plan" "main" {
   name                = var.app_service_plan_name == "" ? format("plan-%s", lower(replace(var.app_service_name, "/[[:^alnum:]]/", ""))) : var.app_service_plan_name
   resource_group_name = local.resource_group_name
@@ -32,6 +35,9 @@ resource "azurerm_app_service_plan" "main" {
   }
 }
 
+#---------------------------------------------------------
+# App Service Definitions  - Default is "true"
+#----------------------------------------------------------
 resource "azurerm_app_service" "main" {
   name                    = lower(format("app-%s", var.app_service_name))
   resource_group_name     = local.resource_group_name
@@ -146,6 +152,9 @@ resource "azurerm_app_service" "main" {
 
 }
 
+#---------------------------------------------------------
+# Custom domain and Certificate config - Default is "true"
+#----------------------------------------------------------
 resource "azurerm_app_service_certificate" "main" {
   for_each            = var.custom_domains != null ? { for k, v in var.custom_domains : k => v if v != null } : {}
   name                = each.key
