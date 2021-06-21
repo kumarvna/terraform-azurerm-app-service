@@ -98,7 +98,7 @@ The pricing tier (`Free`, `Shared`, `Basic`, `Standard`, `Premium`, `PremiumV2`,
 - **Dedicated compute**: The Basic, Standard, Premium, PremiumV2, and PremiumV3 tiers run apps on dedicated Azure VMs. Only apps in the same App Service plan share the same compute resources. The higher the tier, the more VM instances are available to you for scale-out.
 - **Isolated**: This tier runs dedicated Azure VMs on dedicated Azure Virtual Networks. It provides network isolation on top of compute isolation to your apps. It provides the maximum scale-out capabilities.
 
-The `**service_paln**` object accept following keys:
+The **`service_paln`** object accept following keys:
 
 | Name | Description
 |--|--
@@ -108,7 +108,7 @@ capacity|Specifies the number of workers associated with this App Service Plan.|
 tier|Specifies the plan's pricing tier. Valid option are `Free`, `Shared`, `Basic`, `Standard`, `PremiumV2` and `Isolated`
 per_site_scaling| Can Apps assigned to this App Service Plan be scaled independently? If set to false apps assigned to this plan will scale to all instances of the plan
 
-## App Service general settings - `Site_Config`
+## **`Site_Config`** - App Service general settings 
 
 `site_config` block helps you setup the application environment and accept following Keys
 | Name | Description
@@ -140,7 +140,7 @@ scm_type|The type of Source Control enabled for this App Service. Defaults to `N
 use_32_bit_worker_process| Should the App Service run in 32 bit mode, rather than 64 bit mode? **when using an App Service Plan in the `Free` or `Shared` Tiers `use_32_bit_worker_process` must be set to `true`.**
 websockets_enabled|Should WebSockets be enabled?
 
-### A `cors` block - part of `site_config` supports the following:
+### A **`cors`** block - part of `site_config` supports the following:
 
 Since App Service CORS lets you specify one set of accepted origins for all API routes and methods, you would want to use your own CORS code. See how ASP.NET Core does it at Enabling Cross-Origin Requests (CORS). Don't try to use App Service CORS and your own CORS code together. 
 | Name | Description
@@ -148,7 +148,7 @@ Since App Service CORS lets you specify one set of accepted origins for all API 
 allowed_origins|A list of origins which should be able to make cross-origin calls. `*` can be used to allow all calls.
 support_credentials|Are credentials supported?
 
-## `auth_settings` - Authentication and authorization in Azure App Service
+## **`auth_settings`** - Authentication and authorization in Azure App Service
 
 Azure App Service provides built-in authentication and authorization capabilities (sometimes referred to as "Easy Auth"), so you can sign in users and access data by writing minimal or no code in your web app, RESTful API, and mobile back end, and also Azure Functions. 
 
@@ -162,7 +162,7 @@ client_id|The Client ID of this relying party application. Enables OpenIDConnect
 client_secret|The Client Secret of this relying party application. If no secret is provided, implicit flow will be used.
 allowed_audiences| Allowed audience values to consider when validating JSON Web Tokens issued by Azure Active Directory.
 
-## `backup` - Backup and Restore feature in Azure App Service
+## **`backup`** - Backup and Restore feature in Azure App Service
 
 The Backup and Restore feature in Azure App Service lets you easily create app backups manually or on a schedule. You can configure the backups to be retained up to an indefinite amount of time. You can restore the app to a snapshot of a previous state by overwriting the existing app or restoring to another app. 
 
@@ -174,7 +174,7 @@ The Backup and Restore feature in Azure App Service lets you easily create app b
 
 ### Requirements and restrictions
 
-- The Backup and Restore feature requires the App Service plan to be in the `Standard`, `Premium` or `Isolated`. `**Premium**` and `**Isolated**` tiers allow a greater number of daily back ups than `Standard` tier.
+- The Backup and Restore feature requires the App Service plan to be in the `Standard`, `Premium` or `Isolated`. **`Premium`** and **`Isolated`** tiers allow a greater number of daily back ups than `Standard` tier.
 - You need an Azure storage account and container in the same subscription as the app that you want to back up. 
 - Backups can be up to 10 GB of app and database content. If the backup size exceeds this limit, you get an error.
 - Backups of TLS enabled Azure Database for MySQL is not supported.
