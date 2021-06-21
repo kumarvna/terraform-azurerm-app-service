@@ -45,27 +45,28 @@ output "identity" {
 
 output "application_insights_id" {
   description = "The ID of the Application Insights component"
-  value       = azurerm_application_insights.main.*.id
+  value       = var.application_insights_enabled ? azurerm_application_insights.main.*.id : null
 }
 
 output "application_insights_app_id" {
   description = "The App ID associated with this Application Insights component"
-  value       = azurerm_application_insights.main.*.app_id
+  value       = var.application_insights_enabled ? azurerm_application_insights.main.*.app_id : null
 }
 
 output "application_insights_instrumentation_key" {
   description = "The Instrumentation Key for this Application Insights component"
-  value       = azurerm_application_insights.main.*.instrumentation_key
+  value       = var.application_insights_enabled ? azurerm_application_insights.main.*.instrumentation_key : null
   sensitive   = true
 }
 
 output "application_insights_connection_string" {
   description = "The Connection String for this Application Insights component"
-  value       = azurerm_application_insights.main.*.connection_string
+  value       = var.application_insights_enabled ? azurerm_application_insights.main.*.connection_string : null
   sensitive   = true
 }
 
 output "sas_url_query_string" {
-  value     = format("https://${data.azurerm_storage_account.storeacc.0.name}.blob.core.windows.net/${azurerm_storage_container.storcont.0.name}%s", data.azurerm_storage_account_blob_container_sas.main.0.sas)
-  sensitive = true
+  description = "The computed Blob Container Shared Access Signature (SAS)"
+  value       = var.enable_backup ? format("https://${data.azurerm_storage_account.storeacc.0.name}.blob.core.windows.net/${azurerm_storage_container.storcont.0.name}%s", data.azurerm_storage_account_blob_container_sas.main.0.sas) : null
+  sensitive   = true
 }

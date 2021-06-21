@@ -146,13 +146,13 @@ variable "backup_settings" {
     retention_period_in_days = optional(number)
     start_time               = optional(string)
   })
-  /*  default = {
+  default = {
     enabled                  = false
     name                     = "DefaultBackup"
     frequency_interval       = 1
     frequency_unit           = "Day"
     retention_period_in_days = 1
-  }*/
+  }
 }
 
 variable "connection_strings" {

@@ -22,42 +22,6 @@ resource "time_rotating" "main" {
   }
 }
 
-/*
-data "azurerm_storage_account_sas" "main" {
-  count             = var.enable_backup ? 1 : 0
-  connection_string = data.azurerm_storage_account.storeacc.0.primary_connection_string
-  https_only        = true
-  signed_version    = "2017-07-29"
-
-  resource_types {
-    service   = true
-    container = false
-    object    = false
-  }
-
-  services {
-    blob  = true
-    queue = false
-    table = false
-    file  = false
-  }
-
-  start  = timestamp()
-  expiry = time_rotating.main.0.rotation_rfc3339
-
-  permissions {
-    read    = true
-    write   = true
-    delete  = false
-    list    = false
-    add     = true
-    create  = true
-    update  = false
-    process = false
-  }
-}
-*/
-
 data "azurerm_storage_account_blob_container_sas" "main" {
   count             = var.enable_backup ? 1 : 0
   connection_string = data.azurerm_storage_account.storeacc.0.primary_connection_string
