@@ -130,6 +130,11 @@ variable "enable_backup" {
   default     = false
 }
 
+variable "storage_container_name" {
+  description = "The name of the storage container to keep backups"
+  default     = null
+}
+
 variable "backup_settings" {
   description = "Backup settings for App service"
   type = object({
@@ -141,13 +146,13 @@ variable "backup_settings" {
     retention_period_in_days = optional(number)
     start_time               = optional(string)
   })
-  default = {
+  /*  default = {
     enabled                  = false
     name                     = "DefaultBackup"
     frequency_interval       = 1
     frequency_unit           = "Day"
     retention_period_in_days = 1
-  }
+  }*/
 }
 
 variable "connection_strings" {
@@ -171,6 +176,21 @@ variable "custom_domains" {
   description = "Custom domains with SSL binding and SSL certificates for the App Service. Getting the SSL certificate from an Azure Keyvault Certificate Secret or a file is possible."
   type        = map(map(string))
   default     = null
+}
+
+variable "storage_account_name" {
+  description = "The name of the azure storage account"
+  default     = ""
+}
+
+variable "password_end_date" {
+  description = "The relative duration or RFC3339 rotation timestamp after which the password expire"
+  default     = null
+}
+
+variable "password_rotation_in_years" {
+  description = "Number of years to add to the base timestamp to configure the password rotation timestamp. Conflicts with password_end_date and either one is specified and not the both"
+  default     = 2
 }
 
 variable "application_insights_enabled" {

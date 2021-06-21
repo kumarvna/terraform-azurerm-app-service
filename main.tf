@@ -103,12 +103,15 @@ resource "azurerm_app_service" "main" {
     }
   }
 
+  #concat(formatlist("https://%s", [format("%s.blob.core.windows.net/", data.azurerm_storage_account.storeacc.0.name)], [data.azurerm_storage_account_sas.main.0.sas]), [])
+  # format("https://${data.azurerm_storage_account.storeacc.0.name}.blob.core.windows.net/%s", data.azurerm_storage_account_sas.main.0.sas)
+
   dynamic "backup" {
     for_each = var.enable_backup ? [{}] : []
     content {
       name                = coalesce(var.backup_settings.name, "DefaultBackup")
       enabled             = var.backup_settings.enabled
-      storage_account_url = var.backup_settings.storage_account_url
+      storage_account_url = format("https://${data.azurerm_storage_account.storeacc.0.name}.blob.core.windows.net/${azurerm_storage_container.storcont.0.name}%s", data.azurerm_storage_account_blob_container_sas.main.0.sas) #data.azurerm_storage_account_blob_container_sas.main.0.sas
       schedule {
         frequency_interval       = var.backup_settings.frequency_interval
         frequency_unit           = var.backup_settings.frequency_unit

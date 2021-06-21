@@ -167,9 +167,21 @@ module "web-app" {
 
 ## Outputs
 
-| Name                      | Description                              |
-| ------------------------- | ---------------------------------------- |
-| `windows_vm_extension_id` | Resource ID of Virtual Machine extension |
+| Name                                       | Description                                                                                                                     |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `app_service_plan_id`                      | The resource ID of the App Service Plan component                                                                               |
+| `maximum_number_of_workers`                | The maximum number of workers supported with the App Service Plan's sku                                                         |
+| `app_service_id`                           | The resource ID of the App Service component                                                                                    |
+| `default_site_hostname`                    | The Default Hostname associated with the App Service                                                                            |
+| `outbound_ip_addresses`                    | A comma separated list of outbound IP addresses                                                                                 |
+| `outbound_ip_address_list`                 | A list of outbound IP addresses                                                                                                 |
+| `possible_outbound_ip_addresses`           | A comma separated list of outbound IP addresses - not all of which are necessarily in use. Superset of `outbound_ip_addresses`. |
+| `possible_outbound_ip_address_list`        | A list of outbound IP addresses - not all of which are necessarily in use. Superset of `outbound_ip_address_list`               |
+| `identity`                                 | An identity block, which contains the Managed Service Identity information for this App Service                                 |
+| `application_insights_id`                  | The ID of the Application Insights component                                                                                    |
+| `application_insights_app_id`              | The App ID associated with this Application Insights component                                                                  |
+| `application_insights_instrumentation_key` | The Instrumentation Key for this Application Insights component                                                                 |
+| `application_insights_connection_string`   | The Connection String for this Application Insights component                                                                   |
 
 ## Resource Graph
 

@@ -40,6 +40,17 @@ module "web-app" {
     DiagnosticServices_EXTENSION_VERSION = "~3"
   }
 
+  # 
+  enable_backup = true
+  backup_settings = {
+    enabled                  = true
+    name                     = "DefaultBackup"
+    frequency_interval       = 1
+    frequency_unit           = "Day"
+    retention_period_in_days = 90
+  }
+
+  storage_account_name = "stdiagfortesting"
   # By default App Insight resource is created by this module. 
   # Specify valid resource Id to `application_insights_id` to use existing App Insight
   # Specifies the type of Application by setting up `application_insights_type` with valid string
