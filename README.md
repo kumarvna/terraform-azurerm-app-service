@@ -108,7 +108,26 @@ capacity|Specifies the number of workers associated with this App Service Plan.|
 tier|Specifies the plan's pricing tier. Valid option are `Free`, `Shared`, `Basic`, `Standard`, `PremiumV2` and `Isolated`
 per_site_scaling| Can Apps assigned to this App Service Plan be scaled independently? If set to false apps assigned to this plan will scale to all instances of the plan
 
-## **`Site_Config`** - App Service general settings 
+## **`app_settings`** - Configure an App Service
+
+In App Service, app settings are variables passed as environment variables to the application code. For Linux apps and custom containers, App Service passes app settings to the container using the --env flag to set the environment variable in the container.
+
+`app_settings` object key/value pair example:
+
+| Name | Description
+|--|--
+APPINSIGHTS_PROFILERFEATURE_VERSION|"1.0.0"
+APPINSIGHTS_SNAPSHOTFEATURE_VERSION|"1.0.0"
+DiagnosticServices_EXTENSION_VERSION|"~3"
+InstrumentationEngine_EXTENSION_VERSION|"disabled"
+SnapshotDebugger_EXTENSION_VERSION|"disabled"
+XDT_MicrosoftApplicationInsights_BaseExtensions|"disabled"
+XDT_MicrosoftApplicationInsights_Java|"1"
+XDT_MicrosoftApplicationInsights_Mode|"recommended"
+XDT_MicrosoftApplicationInsights_NodeJS|"1"
+XDT_MicrosoftApplicationInsights_PreemptSdk|"disabled"
+
+## **`Site_Config`** - App Service general settings
 
 `site_config` block helps you setup the application environment and accept following Keys
 | Name | Description
@@ -140,9 +159,9 @@ scm_type|The type of Source Control enabled for this App Service. Defaults to `N
 use_32_bit_worker_process| Should the App Service run in 32 bit mode, rather than 64 bit mode? **when using an App Service Plan in the `Free` or `Shared` Tiers `use_32_bit_worker_process` must be set to `true`.**
 websockets_enabled|Should WebSockets be enabled?
 
-### A **`cors`** block - part of `site_config` supports the following:
+### A **`cors`** block - part of `site_config` supports the following
 
-Since App Service CORS lets you specify one set of accepted origins for all API routes and methods, you would want to use your own CORS code. See how ASP.NET Core does it at Enabling Cross-Origin Requests (CORS). Don't try to use App Service CORS and your own CORS code together. 
+Since App Service CORS lets you specify one set of accepted origins for all API routes and methods, you would want to use your own CORS code. See how ASP.NET Core does it at Enabling Cross-Origin Requests (CORS). Don't try to use App Service CORS and your own CORS code together.
 | Name | Description
 |--|--
 allowed_origins|A list of origins which should be able to make cross-origin calls. `*` can be used to allow all calls.
@@ -150,7 +169,7 @@ support_credentials|Are credentials supported?
 
 ## **`auth_settings`** - Authentication and authorization in Azure App Service
 
-Azure App Service provides built-in authentication and authorization capabilities (sometimes referred to as "Easy Auth"), so you can sign in users and access data by writing minimal or no code in your web app, RESTful API, and mobile back end, and also Azure Functions. 
+Azure App Service provides built-in authentication and authorization capabilities (sometimes referred to as "Easy Auth"), so you can sign in users and access data by writing minimal or no code in your web app, RESTful API, and mobile back end, and also Azure Functions.
 
 App Service uses federated identity, in which a third-party identity provider manages the user identities and authentication flow for you.  `Microsoft Identity Platform`, `Facebook`, `Google`, `Twitter`, Any `OpenID Connect` Provider are available by default.  
 
@@ -164,7 +183,7 @@ allowed_audiences| Allowed audience values to consider when validating JSON Web 
 
 ## **`backup`** - Backup and Restore feature in Azure App Service
 
-The Backup and Restore feature in Azure App Service lets you easily create app backups manually or on a schedule. You can configure the backups to be retained up to an indefinite amount of time. You can restore the app to a snapshot of a previous state by overwriting the existing app or restoring to another app. 
+The Backup and Restore feature in Azure App Service lets you easily create app backups manually or on a schedule. You can configure the backups to be retained up to an indefinite amount of time. You can restore the app to a snapshot of a previous state by overwriting the existing app or restoring to another app.
 
 ### What gets backed up
 
@@ -175,7 +194,7 @@ The Backup and Restore feature in Azure App Service lets you easily create app b
 ### Requirements and restrictions
 
 - The Backup and Restore feature requires the App Service plan to be in the `Standard`, `Premium` or `Isolated`. **`Premium`** and **`Isolated`** tiers allow a greater number of daily back ups than `Standard` tier.
-- You need an Azure storage account and container in the same subscription as the app that you want to back up. 
+- You need an Azure storage account and container in the same subscription as the app that you want to back up.
 - Backups can be up to 10 GB of app and database content. If the backup size exceeds this limit, you get an error.
 - Backups of TLS enabled Azure Database for MySQL is not supported.
 - Backups of TLS enabled Azure Database for PostgreSQL is not supported.
@@ -241,7 +260,23 @@ share_name|The name of the file share (container name, for Blob storage).
 access_key|The access key for the storage account.
 mount_path|The path to mount the storage within the site's runtime environment.
 
+## **`identity`** - managed identities for App Service
 
+A managed identity from Azure Active Directory (Azure AD) allows your app to easily access other Azure AD-protected resources such as Azure Key Vault. The identity is managed by the Azure platform and does not require you to provision or rotate any secrets.
+
+Your application can be granted two types of identities:
+
+- **A system-assigned identity**is tied to your application and is deleted if your app is deleted. An app can only have one system-assigned identity.
+- **A user-assigned identity** is a standalone Azure resource that can be assigned to your app. An app can have multiple user-assigned identities.
+
+> An application can have both system-assigned and user-assigned identities at the same time. In this case, the property would be `SystemAssigned, UserAssigned`
+
+`identity` object requires following keys:
+
+| Name | Description
+|--|--
+type| Specifies the identity type of the App Service. Possible values are `SystemAssigned` (where Azure will generate a Service Principal for you), `UserAssigned` where you can specify the Service Principal IDs in the `identity_ids` field, and `SystemAssigned, UserAssigned` which assigns both a system managed identity as well as the specified user assigned identities. When `type` is set to `SystemAssigned`, The assigned `principal_id` and `tenant_id` can be retrieved after the App Service has been created.
+identity_ids|Specifies a list of user managed identity ids to be assigned. Required if `type` is `UserAssigned`.
 
 ## Recommended naming and tagging conventions
 
