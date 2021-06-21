@@ -198,6 +198,49 @@ frequency_unit|Sets the unit of time for how often the backup should be executed
 retention_period_in_days|Specifies the number of days after which Backups should be deleted.
 start_time|Sets when the schedule should start working
 
+## **`connection_string`** - Configure connection strings
+
+For ASP.NET and ASP.NET Core developers, setting connection strings in App Service are like setting them in `<connectionStrings>` in `Web.config`, but the values you set in App Service override the ones in `Web.config`. You can keep development settings in Web.config and SQL Database credentials safely in App Service. The same code uses your development settings when you debug locally, and it uses your production secrets when deployed to Azure.
+
+At runtime, connection strings are available as environment variables, prefixed with the following connection types:
+
+- SQLServer: SQLCONNSTR_
+- MySQL: MYSQLCONNSTR_
+- SQLAzure: SQLAZURECONNSTR_
+- Custom: CUSTOMCONNSTR_
+- PostgreSQL: POSTGRESQLCONNSTR_
+
+For example, a MySql connection string named connectionstring1 can be accessed as the environment variable MYSQLCONNSTR_connectionString1.
+
+`connection_string` object accepts following keys:
+
+| Name | Description
+|--|--
+name|The name of the Connection String
+type|The type of the Connection String. Possible values are `APIHub`, `Custom`, `DocDb`, `EventHub`, `MySQL`, `NotificationHub`, `PostgreSQL`, `RedisCache`, `ServiceBus`, `SQLAzure` and `SQLServer`.
+value|The value for the Connection String
+
+## **`storage_account`** - Access Azure Storage from a web app
+
+> Azure Storage in App Service is in preview for App Service on Linux and Web App for Containers. It's not supported for production scenarios.
+
+### Limitations
+
+- Azure Storage in App Service supports mounting Azure Files containers (Read / Write) and Azure Blob containers (Read Only)
+- Azure Storage in App Service lets you specify up to five mount points per app.
+- Azure Storage mounted to an app is not accessible through App Service FTP/FTPs endpoints. Use Azure Storage Explorer.
+
+`storage_account` object accepts following keys:
+
+| Name | Description
+|--|--
+name|The name of the storage account identifier.
+type|The type of storage. Possible values are AzureBlob and AzureFiles.
+account_name|The name of the storage account.
+share_name|The name of the file share (container name, for Blob storage).
+access_key|The access key for the storage account.
+mount_path|The path to mount the storage within the site's runtime environment.
+
 
 
 ## Recommended naming and tagging conventions
