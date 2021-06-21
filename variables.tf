@@ -166,7 +166,7 @@ variable "identity_ids" {
   default     = null
 }
 
-variable "file_system_storage_account" {
+variable "storage_mounts" {
   description = "Storage account mount points for App Service"
   type        = list(map(string))
   default     = []

@@ -33,6 +33,7 @@ module "web-app" {
     use_32_bit_worker_process = true
     windows_fx_version        = "DOTNETCORE|2.1"
   }
+
   # (Optional) A key-value pair of Application Settings
   app_settings = {
     APPINSIGHTS_PROFILERFEATURE_VERSION             = "1.0.0"
@@ -47,9 +48,10 @@ module "web-app" {
     XDT_MicrosoftApplicationInsights_PreemptSdk     = "disabled"
   }
 
-  # The Backup and Restore feature in Azure App Service lets you easily create app backups manually or on a schedule.
+  # The Backup feature in Azure App Service easily create app backups manually or on a schedule.
   # You can configure the backups to be retained up to an indefinite amount of time.
-  # Storage account and container required in the same subscription. This module creates a Container for backup items. 
+  # Azure storage account and container in the same subscription as the app that you want to back up. 
+  # This module creates a Storage Container to keep the all backup items. 
   # Backup items - App configuration , File content, Database connected to your app
   enable_backup        = true
   storage_account_name = "stdiagfortesting"
