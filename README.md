@@ -299,6 +299,21 @@ Your application can be granted two types of identities:
 type| Specifies the identity type of the App Service. Possible values are `SystemAssigned` (where Azure will generate a Service Principal for you), `UserAssigned` where you can specify the Service Principal IDs in the `identity_ids` field, and `SystemAssigned, UserAssigned` which assigns both a system managed identity as well as the specified user assigned identities. When `type` is set to `SystemAssigned`, The assigned `principal_id` and `tenant_id` can be retrieved after the App Service has been created.
 identity_ids|Specifies a list of user managed identity ids to be assigned. Required if `type` is `UserAssigned`.
 
+## App Insights
+
+Application Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals. Use it to monitor your live applications. It will automatically detect performance anomalies, and includes powerful analytics tools to help you diagnose issues and to understand what users actually do with your app. It's designed to help you continuously improve performance and usability. It works for apps on a wide variety of platforms including .NET, Node.js, Java, and Python hosted on-premises, hybrid, or any public cloud. It integrates with your DevOps process, and has connection points to a variety of development tools. It can monitor and analyze telemetry from mobile apps by integrating with Visual Studio App Center.
+
+By default, this module creates App Insight and enables monitoring integration for app service. You can also specify existing App Insight in case you want to use one. See the following table for various options to customize the experience.
+
+| Name | Description
+|--|--
+application_insights_enabled| Specify the Application Insights use for this App Service. Defaults to `true`
+application_insights_id| Resource ID of the existing Application Insights. Defaults to `false`
+app_insights_name|The Name of the application insights if you are creating the new resource with this module.
+application_insights_type|Specifies the type of Application Insights to create. Valid values are `ios` for iOS, `java` for Java web, `MobileCenter` for App Center, `Node.JS` for Node.js, `other` for General, `phone` for Windows Phone, `store` for Windows Store and `web` for ASP.NET. Defaults to `web`
+retention_in_days|Specifies the retention period in days. Possible values are `30`, `60`, `90`, `120`, `180`, `270`, `365`, `550` or `730`. Defaults to `90`
+disable_ip_masking|By default the real client ip is masked as `0.0.0.0` in the logs. Use this argument to disable masking and log the real client ip. Defaults to `false`
+
 ## Recommended naming and tagging conventions
 
 Applying tags to your Azure resources, resource groups, and subscriptions to logically organize them into a taxonomy. Each tag consists of a name and a value pair. For example, you can apply the name `Environment` and the value `Production` to all the resources in production.
