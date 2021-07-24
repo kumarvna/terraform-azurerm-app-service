@@ -2,9 +2,17 @@
 
 Azure App Service is a fully managed web hosting service for building web apps, mobile back ends and RESTful APIs. This terraform module helps you create Azure App Service with optional site_config, backup, connection_string, auth_settings and Storage for mount points.
 
+> **[!NOTE]**
+> **This module supports the meta arguments including `providers`, `depends_on`, `count`, and `for_each`.**
+
 ## Module Usage
 
 ```hcl
+# Azurerm Provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "web-app" {
   source  = "kumarvna/web-app/azurerm"
   version = "1.0.0"

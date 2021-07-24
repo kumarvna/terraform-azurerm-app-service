@@ -1,3 +1,89 @@
+#---------------------------------
+# Local declarations
+#---------------------------------
+locals {
+  resource_group_name = element(coalescelist(data.azurerm_resource_group.rgrp.*.name, azurerm_resource_group.rg.*.name, [""]), 0)
+  location            = element(coalescelist(data.azurerm_resource_group.rgrp.*.location, azurerm_resource_group.rg.*.location, [""]), 0)
+
+  # Default configuration for Site config block
+  default_site_config = {
+    always_on = "true"
+  }
+
+  # Enabling the App Insights on app service - default configuration for agent
+  app_insights = try(data.azurerm_application_insights.main.0, try(azurerm_application_insights.main.0, {}))
+
+  default_app_settings = var.application_insights_enabled ? {
+    APPLICATION_INSIGHTS_IKEY                  = try(local.app_insights.instrumentation_key, "")
+    APPINSIGHTS_INSTRUMENTATIONKEY             = try(local.app_insights.instrumentation_key, "")
+    APPLICATIONINSIGHTS_CONNECTION_STRING      = try(local.app_insights.connection_string, "")
+    ApplicationInsightsAgent_EXTENSION_VERSION = "~2"
+  } : {}
+
+  # App service IP Address, Subnet_ids and Service_Tag restrictions
+  ip_address = [for ip_address in var.ips_allowed : {
+    name                      = "ip_restriction_cidr_${join("", [1, index(var.ips_allowed, ip_address)])}"
+    ip_address                = ip_address
+    virtual_network_subnet_id = null
+    service_tag               = null
+    subnet_id                 = null
+    priority                  = join("", [1, index(var.ips_allowed, ip_address)])
+    action                    = "Allow"
+  }]
+
+  subnets = [for subnet in var.subnet_ids_allowed : {
+    name                      = "ip_restriction_subnet_${join("", [1, index(var.subnet_ids_allowed, subnet)])}"
+    ip_address                = null
+    virtual_network_subnet_id = subnet
+    service_tag               = null
+    subnet_id                 = subnet
+    priority                  = join("", [1, index(var.subnet_ids_allowed, subnet)])
+    action                    = "Allow"
+  }]
+
+  service_tags = [for service_tag in var.service_tags_allowed : {
+    name                      = "service_tag_restriction_${join("", [1, index(var.service_tags_allowed, service_tag)])}"
+    ip_address                = null
+    virtual_network_subnet_id = null
+    service_tag               = service_tag
+    subnet_id                 = null
+    priority                  = join("", [1, index(var.service_tags_allowed, service_tag)])
+    action                    = "Allow"
+  }]
+
+  # App service SCM IP Address, SCM Subnet_ids andSCM  Service_Tag restrictions
+  scm_ip_address = [for ip_address in var.scm_ips_allowed : {
+    name                      = "scm_ip_restriction_cidr_${join("", [1, index(var.scm_ips_allowed, ip_address)])}"
+    ip_address                = ip_address
+    virtual_network_subnet_id = null
+    service_tag               = null
+    subnet_id                 = null
+    priority                  = join("", [1, index(var.scm_ips_allowed, ip_address)])
+    action                    = "Allow"
+  }]
+
+  scm_subnets = [for subnet in var.scm_subnet_ids_allowed : {
+    name                      = "scm_ip_restriction_subnet_${join("", [1, index(var.scm_subnet_ids_allowed, subnet)])}"
+    ip_address                = null
+    virtual_network_subnet_id = subnet
+    service_tag               = null
+    subnet_id                 = subnet
+    priority                  = join("", [1, index(var.scm_subnet_ids_allowed, subnet)])
+    action                    = "Allow"
+  }]
+
+  scm_service_tags = [for service_tag in var.scm_service_tags_allowed : {
+    name                      = "scm_service_tag_restriction_${join("", [1, index(var.scm_service_tags_allowed, service_tag)])}"
+    ip_address                = null
+    virtual_network_subnet_id = null
+    service_tag               = service_tag
+    subnet_id                 = null
+    priority                  = join("", [1, index(var.scm_service_tags_allowed, service_tag)])
+    action                    = "Allow"
+  }]
+
+}
+
 #---------------------------------------------------------
 # Resource Group Creation or selection - Default is "true"
 #----------------------------------------------------------
@@ -13,6 +99,58 @@ resource "azurerm_resource_group" "rg" {
   name     = lower(var.resource_group_name)
   location = var.location
   tags     = merge({ "ResourceName" = format("%s", var.resource_group_name) }, var.tags, )
+}
+
+#---------------------------------------------------------
+# Generating Storage SAS URL  - Default is "false"
+#----------------------------------------------------------
+data "azurerm_storage_account" "storeacc" {
+  count               = var.enable_backup ? 1 : 0
+  name                = var.storage_account_name
+  resource_group_name = local.resource_group_name
+}
+
+resource "azurerm_storage_container" "storcont" {
+  count                 = var.enable_backup ? 1 : 0
+  name                  = var.storage_container_name == null ? "appservice-backup" : var.storage_container_name
+  storage_account_name  = data.azurerm_storage_account.storeacc.0.name
+  container_access_type = "private"
+}
+
+resource "time_rotating" "main" {
+  count            = var.enable_backup ? 1 : 0
+  rotation_rfc3339 = var.password_end_date
+  rotation_years   = var.password_rotation_in_years
+
+  triggers = {
+    end_date = var.password_end_date
+    years    = var.password_rotation_in_years
+  }
+}
+
+data "azurerm_storage_account_blob_container_sas" "main" {
+  count             = var.enable_backup ? 1 : 0
+  connection_string = data.azurerm_storage_account.storeacc.0.primary_connection_string
+  container_name    = azurerm_storage_container.storcont.0.name
+  https_only        = true
+
+  start  = timestamp()
+  expiry = time_rotating.main.0.rotation_rfc3339
+
+  permissions {
+    read   = true
+    add    = true
+    create = true
+    write  = true
+    delete = true
+    list   = true
+  }
+
+  cache_control       = "max-age=5"
+  content_disposition = "inline"
+  content_encoding    = "deflate"
+  content_language    = "en-US"
+  content_type        = "application/json"
 }
 
 #---------------------------------------------------------
@@ -174,3 +312,23 @@ resource "azurerm_app_service_custom_hostname_binding" "cust-host-bind" {
   thumbprint          = lookup(azurerm_app_service_certificate.main, each.key, false) != false ? azurerm_app_service_certificate.main[each.key].thumbprint : null
 }
 
+
+#---------------------------------------------------------
+# Application Insights resoruces - Default is "false"
+#----------------------------------------------------------
+data "azurerm_application_insights" "main" {
+  count               = var.application_insights_enabled && var.application_insights_id != null ? 1 : 0
+  name                = split("/", var.application_insights_id)[8]
+  resource_group_name = split("/", var.application_insights_id)[4]
+}
+
+resource "azurerm_application_insights" "main" {
+  count               = var.application_insights_enabled && var.application_insights_id == null ? 1 : 0
+  name                = lower(format("appi-%s", var.app_insights_name))
+  location            = local.location
+  resource_group_name = local.resource_group_name
+  application_type    = var.application_insights_type
+  retention_in_days   = var.retention_in_days
+  disable_ip_masking  = var.disable_ip_masking
+  tags                = merge({ "ResourceName" = "${var.app_insights_name}" }, var.tags, )
+}
