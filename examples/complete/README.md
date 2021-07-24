@@ -10,8 +10,8 @@ provider "azurerm" {
   features {}
 }
 
-module "web-app" {
-  source  = "kumarvna/web-app/azurerm"
+module "app-service" {
+  source  = "kumarvna/app-service/azurerm"
   version = "1.0.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
