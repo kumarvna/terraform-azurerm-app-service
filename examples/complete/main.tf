@@ -1,6 +1,12 @@
+# Azurerm Provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "web-app" {
-  source  = "kumarvna/web-app/azurerm"
-  version = "1.0.0"
+  //  source  = "kumarvna/web-app/azurerm"
+  //  version = "1.0.0"
+  source = "../../"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 

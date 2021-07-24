@@ -5,6 +5,11 @@ Terraform module to create Azure App Service with optional site_config, backup, 
 ## Module Usage
 
 ```hcl
+# Azurerm Provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "web-app" {
   source  = "kumarvna/web-app/azurerm"
   version = "1.0.0"
