@@ -70,3 +70,7 @@ output "sas_url_query_string" {
   sensitive = true
 }
 
+output "app_service_virtual_network_swift_connection_id" {
+  description = "The ID of the App Service Virtual Network integration"
+  value       = module.app-service.app_service_virtual_network_swift_connection_id
+}

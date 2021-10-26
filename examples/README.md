@@ -93,12 +93,22 @@ module "app-service" {
 }
 ```
 
-## Module Usage to create app service and optional resoruces with VNet integration 
+## Module Usage to create app service and optional resoruces with VNet integration
 
 ```hcl
 # Azurerm Provider configuration
 provider "azurerm" {
   features {}
+}
+
+locals {
+  tags = {
+    ProjectName  = "demo-internal"
+    Env          = "dev"
+    Owner        = "user@example.com"
+    BusinessUnit = "CORP"
+    ServiceClass = "Gold"
+  }
 }
 
 module "vnet" {
@@ -125,20 +135,12 @@ module "vnet" {
       }
     }
   }
-
-  # Adding TAG's to your Azure resources (Required)
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
+  tags = local.tags
 }
 
 module "app-service" {
   source  = "kumarvna/app-service/azurerm"
-  version = "1.0.0"
+  version = "1.1.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 
@@ -214,13 +216,7 @@ module "app-service" {
   app_insights_name = "otkpocshared"
 
   # Adding TAG's to your Azure resources 
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
+  tags = local.tags
 }
 ```
 

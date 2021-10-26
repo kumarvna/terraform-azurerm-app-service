@@ -412,6 +412,7 @@ An effective naming convention assembles resource names by using important resou
 `application_insights_app_id` | The App ID associated with this Application Insights component
 `application_insights_instrumentation_key` | The Instrumentation Key for this Application Insights component
 `application_insights_connection_string` | The Connection String for this Application Insights component
+`app_service_virtual_network_swift_connection_id`|The ID of the App Service Virtual Network integration
 
 ## Resource Graph
 

@@ -3,6 +3,16 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  tags = {
+    ProjectName  = "demo-internal"
+    Env          = "dev"
+    Owner        = "user@example.com"
+    BusinessUnit = "CORP"
+    ServiceClass = "Gold"
+  }
+}
+
 module "vnet" {
   source  = "kumarvna/vnet/azurerm"
   version = "2.1.0"
@@ -27,15 +37,7 @@ module "vnet" {
       }
     }
   }
-
-  # Adding TAG's to your Azure resources (Required)
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
+  tags = local.tags
 }
 
 module "app-service" {
@@ -116,11 +118,5 @@ module "app-service" {
   app_insights_name = "otkpocshared"
 
   # Adding TAG's to your Azure resources 
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
+  tags = local.tags
 }
