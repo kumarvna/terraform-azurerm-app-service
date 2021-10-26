@@ -13,6 +13,10 @@ variable "location" {
   default     = ""
 }
 
+variable "subnet_id" {
+  description = "The name of the subnet for vnet association"
+  default     = null
+}
 
 variable "app_service_plan_name" {
   description = "Specifies the name of the App Service Plan component"
@@ -220,6 +224,11 @@ variable "retention_in_days" {
 
 variable "disable_ip_masking" {
   description = "By default the real client ip is masked as `0.0.0.0` in the logs. Use this argument to disable masking and log the real client ip"
+  default     = false
+}
+
+variable "enable_vnet_association" {
+  description = "Manages an App Service Virtual Network Association"
   default     = false
 }
 

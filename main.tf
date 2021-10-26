@@ -288,6 +288,17 @@ resource "azurerm_app_service" "main" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      tags,
+      site_config,
+      backup,
+      auth_settings,
+      storage_account,
+      identity,
+      connection_string,
+    ]
+  }
 }
 
 #---------------------------------------------------------
@@ -331,4 +342,13 @@ resource "azurerm_application_insights" "main" {
   retention_in_days   = var.retention_in_days
   disable_ip_masking  = var.disable_ip_masking
   tags                = merge({ "ResourceName" = "${var.app_insights_name}" }, var.tags, )
+}
+
+#-------------------------------------------------------------
+# App Service Virtual Network Association - Default is "false"
+#-------------------------------------------------------------
+resource "azurerm_app_service_virtual_network_swift_connection" "main" {
+  count          = var.enable_vnet_association == true ? 1 : 0
+  app_service_id = azurerm_app_service.main.id
+  subnet_id      = var.subnet_id
 }
