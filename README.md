@@ -15,7 +15,7 @@ provider "azurerm" {
 
 module "app-service" {
   source  = "kumarvna/app-service/azurerm"
-  version = "1.0.0"
+  version = "1.1.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 
@@ -360,7 +360,7 @@ An effective naming convention assembles resource names by using important resou
 `create_resource_group` | Whether to create resource group and use it for all networking resources | string | `"false"`
 `resource_group_name` | The name of the resource group in which resources are created | string | `""`
 `location` | The location of the resource group in which resources are created | string | `""`
-`subnet_id`|The resource id of the subnet for vnet association|string|`""`
+`subnet_id`|The resource id of the subnet for regional vnet integration|string|`""`
 `app_service_plan_name` | Specifies the name of the App Service Plan component | string | `""`
 `service_plan` | Definition of the dedicated plan to use | object({}) | `{}`
 `app_service_name` | Specifies the name of the App Service | string | `""`

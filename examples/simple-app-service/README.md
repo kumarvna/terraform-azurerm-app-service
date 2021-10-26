@@ -12,7 +12,7 @@ provider "azurerm" {
 
 module "app-service" {
   source  = "kumarvna/app-service/azurerm"
-  version = "1.0.0"
+  version = "1.1.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 
