@@ -313,6 +313,8 @@ VNet integration gives your app access to resources in your VNet, but it doesn't
 
 This feature can be enabled by setting up `enable_vnet_integration` varaible to `true` and providing a valid `subnet_id`. The subnet must have a `service_delegation` configured for `Microsoft.Web/serverFarms`
 
+[Example usage of App service with VNet Integration](examples/app-service-with-vnet-integration/)
+
 ## App Insights
 
 Application Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals. Use it to monitor your live applications. It will automatically detect performance anomalies, and includes powerful analytics tools to help you diagnose issues and to understand what users actually do with your app. It's designed to help you continuously improve performance and usability. It works for apps on a wide variety of platforms including .NET, Node.js, Java, and Python hosted on-premises, hybrid, or any public cloud. It integrates with your DevOps process, and has connection points to a variety of development tools. It can monitor and analyze telemetry from mobile apps by integrating with Visual Studio App Center.
