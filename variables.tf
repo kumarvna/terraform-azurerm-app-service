@@ -14,7 +14,7 @@ variable "location" {
 }
 
 variable "subnet_id" {
-  description = "The name of the subnet for vnet association"
+  description = "The resource id of the subnet for vnet association"
   default     = null
 }
 
@@ -227,7 +227,7 @@ variable "disable_ip_masking" {
   default     = false
 }
 
-variable "enable_vnet_association" {
+variable "enable_vnet_integration" {
   description = "Manages an App Service Virtual Network Association"
   default     = false
 }

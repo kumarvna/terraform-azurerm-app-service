@@ -348,7 +348,7 @@ resource "azurerm_application_insights" "main" {
 # App Service Virtual Network Association - Default is "false"
 #-------------------------------------------------------------
 resource "azurerm_app_service_virtual_network_swift_connection" "main" {
-  count          = var.enable_vnet_association == true ? 1 : 0
+  count          = var.enable_vnet_integration == true ? 1 : 0
   app_service_id = azurerm_app_service.main.id
   subnet_id      = var.subnet_id
 }
