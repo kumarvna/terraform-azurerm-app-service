@@ -1,18 +1,48 @@
-# Azure App Service (Web Apps) Terraform Module
-
-Terraform module to create Azure App Service with optional site_config, backup, connection_string, auth_settings and Storage for mount points.
-
-## Module Usage
-
-```hcl
 # Azurerm Provider configuration
 provider "azurerm" {
   features {}
 }
 
+locals {
+  tags = {
+    ProjectName  = "demo-internal"
+    Env          = "dev"
+    Owner        = "user@example.com"
+    BusinessUnit = "CORP"
+    ServiceClass = "Gold"
+  }
+}
+
+module "vnet" {
+  source  = "kumarvna/vnet/azurerm"
+  version = "2.1.0"
+
+  create_resource_group  = false
+  resource_group_name    = "rg-shared-westeurope-01"
+  vnetwork_name          = "vnet-shared-hub-westeurope-002"
+  location               = "westeurope"
+  vnet_address_space     = ["10.2.0.0/16"]
+  create_network_watcher = false
+
+  subnets = {
+    web_subnet = {
+      subnet_name           = "snet-webapp"
+      subnet_address_prefix = ["10.2.1.0/24"]
+      delegation = {
+        name = "testdelegation"
+        service_delegation = {
+          name    = "Microsoft.Web/serverFarms"
+          actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+        }
+      }
+    }
+  }
+  tags = local.tags
+}
+
 module "app-service" {
   source  = "kumarvna/app-service/azurerm"
-  version = "1.0.0"
+  version = "1.1.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 
@@ -31,7 +61,7 @@ module "app-service" {
 
   # App Service settings and supported arguments
   # Backup, connection_string, auth_settings, Storage for mounts are optional configuration
-  app_service_name       = "mypocproject"
+  app_service_name       = "kumarsmypocproject"
   enable_client_affinity = true
 
   # A `site_config` block to setup the application environment. 
@@ -66,7 +96,7 @@ module "app-service" {
   # This module creates a Storage Container to keep the all backup items. 
   # Backup items - App configuration , File content, Database connected to your app
   enable_backup        = true
-  storage_account_name = "stdiagfortesting"
+  storage_account_name = "stdiagfortesting1"
   backup_settings = {
     enabled                  = true
     name                     = "DefaultBackup"
@@ -74,6 +104,11 @@ module "app-service" {
     frequency_unit           = "Day"
     retention_period_in_days = 90
   }
+
+  # Regional VNet integration configuration
+  # Enables you to place the back end of app in a subnet in virtual network in the same region
+  enable_vnet_integration = true
+  subnet_id               = element(module.vnet.subnet_ids, 0)
 
   # By default App Insight resource is created by this module. 
   # Specify valid resource Id to `application_insights_id` to use existing App Insight
@@ -83,26 +118,5 @@ module "app-service" {
   app_insights_name = "otkpocshared"
 
   # Adding TAG's to your Azure resources 
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
+  tags = local.tags
 }
-```
-
-## Terraform Usage
-
-To run this example you need to execute following Terraform commands
-
-```hcl
-terraform init
-
-terraform plan
-
-terraform apply
-```
-
-Run `terraform destroy` when you don't need these resources.

@@ -15,7 +15,7 @@ provider "azurerm" {
 
 module "app-service" {
   source  = "kumarvna/app-service/azurerm"
-  version = "1.0.0"
+  version = "1.1.0"
 
   # By default, this module will not create a resource group. Location will be same as existing RG.
   # proivde a name to use an existing resource group, specify the existing resource group name, 
@@ -307,6 +307,14 @@ Your application can be granted two types of identities:
 type| Specifies the identity type of the App Service. Possible values are `SystemAssigned` (where Azure will generate a Service Principal for you), `UserAssigned` where you can specify the Service Principal IDs in the `identity_ids` field, and `SystemAssigned, UserAssigned` which assigns both a system managed identity as well as the specified user assigned identities. When `type` is set to `SystemAssigned`, The assigned `principal_id` and `tenant_id` can be retrieved after the App Service has been created.
 identity_ids|Specifies a list of user managed identity ids to be assigned. Required if `type` is `UserAssigned`.
 
+## VNet Integration - Integrate app with an Azure virtual network
+
+VNet integration gives your app access to resources in your VNet, but it doesn't grant inbound private access to your app from the VNet. Private site access refers to making an app accessible only from a private network, such as from within an Azure virtual network. VNet integration is used only to make outbound calls from your app into your VNet. This feature requires a `Standard`, `Premium`, `PremiumV2`, `PremiumV3`, or `Elastic Premium` App Service pricing tier.
+
+This feature can be enabled by setting up `enable_vnet_integration` varaible to `true` and providing a valid `subnet_id`. The subnet must have a `service_delegation` configured for `Microsoft.Web/serverFarms`
+
+[Example usage of App service with VNet Integration](examples/app-service-with-vnet-integration/)
+
 ## App Insights
 
 Application Insights, a feature of Azure Monitor, is an extensible Application Performance Management (APM) service for developers and DevOps professionals. Use it to monitor your live applications. It will automatically detect performance anomalies, and includes powerful analytics tools to help you diagnose issues and to understand what users actually do with your app. It's designed to help you continuously improve performance and usability. It works for apps on a wide variety of platforms including .NET, Node.js, Java, and Python hosted on-premises, hybrid, or any public cloud. It integrates with your DevOps process, and has connection points to a variety of development tools. It can monitor and analyze telemetry from mobile apps by integrating with Visual Studio App Center.
@@ -352,6 +360,7 @@ An effective naming convention assembles resource names by using important resou
 `create_resource_group` | Whether to create resource group and use it for all networking resources | string | `"false"`
 `resource_group_name` | The name of the resource group in which resources are created | string | `""`
 `location` | The location of the resource group in which resources are created | string | `""`
+`subnet_id`|The resource id of the subnet for regional vnet integration|string|`""`
 `app_service_plan_name` | Specifies the name of the App Service Plan component | string | `""`
 `service_plan` | Definition of the dedicated plan to use | object({}) | `{}`
 `app_service_name` | Specifies the name of the App Service | string | `""`
@@ -383,6 +392,7 @@ An effective naming convention assembles resource names by using important resou
 `application_insights_type` | Specifies the type of Application Insights to create. Valid values are `ios` for iOS, `java` for Java web, `MobileCenter` for App Center, `Node.JS` for Node.js, `other` for General, `phone` for Windows Phone, `store` for Windows Store and `web` for ASP.NET | string | `"web"`
 `retention_in_days` | Specifies the retention period in days. Possible values are `30`, `60`, `90`, `120`, `180`, `270`, `365`, `550` or `730` | number | `90`
 `disable_ip_masking` | By default the real client ip is masked as `0.0.0.0` in the logs. Use this argument to disable masking and log the real client ip | string | `false`
+`enable_vnet_integration`|Manages an App Service Virtual Network Association|string|`false`
 `Tags` | A map of tags to add to all resources | map | `{}`
 
 ## Outputs
@@ -402,6 +412,7 @@ An effective naming convention assembles resource names by using important resou
 `application_insights_app_id` | The App ID associated with this Application Insights component
 `application_insights_instrumentation_key` | The Instrumentation Key for this Application Insights component
 `application_insights_connection_string` | The Connection String for this Application Insights component
+`app_service_virtual_network_swift_connection_id`|The ID of the App Service Virtual Network integration
 
 ## Resource Graph
 
