@@ -24,7 +24,7 @@ module "app-service" {
 
   # App Service settings and supported arguments
   # Backup, connection_string, auth_settings, Storage for mounts are optional configuration
-  app_service_name       = "mypocproject"
+  app_service_name       = "myapp-poc-project"
   enable_client_affinity = true
 
   # A `site_config` block to setup the application environment. 
@@ -59,7 +59,7 @@ module "app-service" {
   # This module creates a Storage Container to keep the all backup items. 
   # Backup items - App configuration , File content, Database connected to your app
   enable_backup        = true
-  storage_account_name = "stdiagfortesting"
+  storage_account_name = "stdiagfortesting1"
   backup_settings = {
     enabled                  = true
     name                     = "DefaultBackup"
